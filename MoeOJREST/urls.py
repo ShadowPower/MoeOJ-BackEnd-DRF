@@ -22,5 +22,6 @@ from oj.urls import router
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/token/', obtain_auth_token, name='api-token'),
+    url(r'^', include('rest_framework.urls')),
     url(r'^api/', include(router.urls)),
 ]

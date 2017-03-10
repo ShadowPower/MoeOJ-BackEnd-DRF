@@ -1,6 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager)
 from django.utils.timezone import now
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
+
+from rest_framework.authtoken.models import Token
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 # 用户权限
 REGULAR_USER = 0
@@ -107,7 +117,7 @@ class Notice(models.Model):
     # 作者
     author = models.ForeignKey(User)
     # 日期时间
-    date = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     # 正文
     body = models.TextField(null=True)
 
@@ -259,5 +269,5 @@ class ContestSolution(AbstractSolution):
 class Comment(models.Model):
     author = models.ForeignKey(User)
     problem = models.ForeignKey(Problem)
-    date = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     body = models.TextField(null=True)
