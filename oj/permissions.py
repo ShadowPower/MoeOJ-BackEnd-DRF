@@ -15,6 +15,28 @@ class UserPermission(permissions.BasePermission):
         try:
             if obj.id == request.user.id or request.user.user_type == ADMIN or request.user.user_type == SUPER_ADMIN:
                 return True
-        except Exception as err:
+        except Exception as error:
+            return False
+        return False
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        try:
+            if request.user.user_type == ADMIN or request.user.user_type == SUPER_ADMIN:
+                return True
+        except Exception as error:
+            return False
+        return False
+
+class IsSuperAdminOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        try:
+            if request.user.user_type == SUPER_ADMIN:
+                return True
+        except Exception as error:
             return False
         return False
